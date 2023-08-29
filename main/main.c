@@ -1,14 +1,20 @@
+/* Includes */
 #include <stdio.h>
 #include <stdbool.h>
 #include <unistd.h>
 #include "driver/i2c.h"
+#include "Registers.h"
 
+
+/* Defines */
 #define I2C_MASTER_SCL_IO 19
 #define I2C_MASTER_SDA_IO 18
 #define I2C_MASTER_NUM I2C_NUM_0
 #define I2C_MASTER_FREQ_HZ 100000
 
 #define ISL94202_ADDR 0x7F // Endereço I2C do ISL94202
+
+
 
 void i2c_master_init() {
     i2c_config_t conf;
@@ -29,7 +35,7 @@ void app_main() {
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
     i2c_master_write_byte(cmd, (ISL94202_ADDR << 1) | I2C_MASTER_WRITE, true);
-    i2c_master_write_byte(cmd, 0x01, true); // Endereço do registro a ser lido
+    i2c_master_write_byte(cmd, 0x01, true); // Endereço do registo a ser lido
     i2c_master_start(cmd);
     i2c_master_write_byte(cmd, (ISL94202_ADDR << 1) | I2C_MASTER_READ, true);
     i2c_master_read_byte(cmd, &reg_value, I2C_MASTER_LAST_NACK);
