@@ -7,12 +7,12 @@
 
 
 /* Defines */
-#define I2C_MASTER_SCL_IO 19
-#define I2C_MASTER_SDA_IO 18
+#define I2C_MASTER_SCL_IO 22
+#define I2C_MASTER_SDA_IO 21
 #define I2C_MASTER_NUM I2C_NUM_0
 #define I2C_MASTER_FREQ_HZ 100000
 
-#define ISL94202_ADDR 0x7F // Endereço I2C do ISL94202
+#define ISL94202_ADDR 0x29 // Endereço I2C do ISL94202
 
 
 
