@@ -43,6 +43,13 @@ static esp_err_t i2c_master_init(void)
     return i2c_driver_install(i2c_master_port, conf.mode, I2C_MASTER_RX_BUF_DISABLE, I2C_MASTER_TX_BUF_DISABLE, 0);
 }
 
+static bool writeToEEprom() {
+
+
+	return (false);
+}
+
+
 void app_main() {
     uint8_t reg_value;
     uint8_t cellSelectReg = 0x49;
