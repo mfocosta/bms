@@ -17,9 +17,6 @@
 #define I2C_MASTER_SCL_IO 22
 #define I2C_MASTER_SDA_IO 21
 
-#define ISL94202_ADDR 0x29 /* Endereço I2C do ISL94202 */
-#define CELL_SELECT_REG 0x49
-
 static const char *TAG = "bms-test";
 
 /**
@@ -43,7 +40,7 @@ static esp_err_t i2c_master_init(void)
     return i2c_driver_install(i2c_master_port, conf.mode, I2C_MASTER_RX_BUF_DISABLE, I2C_MASTER_TX_BUF_DISABLE, 0);
 }
 
-static bool writeToEEprom() {
+static esp_err_t writeToEEprom() {
 
 
 	return (false);

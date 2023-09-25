@@ -51,3 +51,6 @@ Module.symvers
 Mkfile.old
 dkms.conf
 /build/
+.vscode/c_cpp_properties.json
+.gitignore
+.vscode/settings.json
