@@ -37,7 +37,7 @@ static esp_err_t i2c_master_init(void)
 
     i2c_param_config(i2c_master_port, &conf);
 
-    return i2c_driver_install(i2c_master_port, conf.mode, I2C_MASTER_RX_BUF_DISABLE, I2C_MASTER_TX_BUF_DISABLE, 0);
+    return (i2c_driver_install(i2c_master_port, conf.mode, I2C_MASTER_RX_BUF_DISABLE, I2C_MASTER_TX_BUF_DISABLE, 0));
 }
 
 static esp_err_t writeToEEprom() {
@@ -53,10 +53,10 @@ void app_main() {
     uint8_t write_buf[2] = {0x49, 0b11000011}; /* 4 cells */
     i2c_master_init();
     i2c_master_write_read_device(I2C_MASTER_NUM, ISL94202_ADDR, &cellSelectReg, 1, &reg_value, 1, I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS);
-    printf("Valor do registo inicial: %02x\n", reg_value);
+    printf("Initial register value: %02x\n", reg_value);
     i2c_master_write_to_device(I2C_MASTER_NUM, ISL94202_ADDR, write_buf, sizeof(write_buf), I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS);
     i2c_master_write_read_device(I2C_MASTER_NUM, ISL94202_ADDR, &cellSelectReg, 1, &reg_value, 1, I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS);
-    printf("Valor do registo apos escrita: %02x\n", reg_value);
+    printf("Register value after write: %02x\n", reg_value);
 
 
     ESP_ERROR_CHECK(i2c_driver_delete(I2C_MASTER_NUM));
