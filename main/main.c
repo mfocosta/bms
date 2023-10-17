@@ -55,7 +55,7 @@ static esp_err_t writeToEEprom() {
 /**
  * @brief write to Register
  */
-static esp_err_t writeReg(uint8_t regValue, uint8_t regAddress) {
+static esp_err_t writeReg(uint8_t regValue, uint8_t regAddress, uint8_t *write_buf) {
     ESP_ERROR_CHECK_WITHOUT_ABORT(i2c_master_write_read_device(I2C_MASTER_NUM, ISL94202_ADDR, &regAddress, sizeof(regAddress), &regValue, sizeof(regValue), I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS));
     printf("Initial %02x register value: %02x\n", regValue);
     ESP_ERROR_CHECK_WITHOUT_ABORT(i2c_master_write_to_device(I2C_MASTER_NUM, ISL94202_ADDR, write_buf, sizeof(write_buf), I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS));
