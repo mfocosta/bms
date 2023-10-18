@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <string.h>
 #include "Registers.h"
 #include "driver/i2c.h"
 #include "esp_log.h"
@@ -55,25 +56,77 @@ static esp_err_t writeToEEprom() {
 /**
  * @brief write to Register
  */
-static esp_err_t writeReg(uint8_t regValue, uint8_t regAddress, uint8_t *write_buf) {
+static esp_err_t writeReg(uint8_t regAddress, uint8_t *write_buf) {
+	uint8_t regValue;
     ESP_ERROR_CHECK_WITHOUT_ABORT(i2c_master_write_read_device(I2C_MASTER_NUM, ISL94202_ADDR, &regAddress, sizeof(regAddress), &regValue, sizeof(regValue), I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS));
-    printf("Initial %02x register value: %02x\n", regValue);
+    printf("Initial %02x register value: %02x\n", regAddress, regValue);
     ESP_ERROR_CHECK_WITHOUT_ABORT(i2c_master_write_to_device(I2C_MASTER_NUM, ISL94202_ADDR, write_buf, sizeof(write_buf), I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS));
     ESP_ERROR_CHECK_WITHOUT_ABORT(i2c_master_write_read_device(I2C_MASTER_NUM, ISL94202_ADDR, &regAddress, sizeof(regAddress), &regValue, sizeof(regValue), I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS));
-    printf("Register %02x value after write: %02x\n", regValue);
+    printf("Register %02x value after write: %02x\n", regAddress, regValue);
 
 	return (ESP_OK);
+}
+
+
+void showMainMenu() {
+    printf("Main Menu:\n");
+    printf("1. Register 4 cells\n");
+    printf("2. Option 2\n");
+    printf("3. Exit\n");
+}
+
+void handleOption(int option) {
+    switch (option) {
+        case 1:
+            printf("Sending 4 cells info...\n");
+            uint8_t write_buf[2] = {CELL_SELECT_REG, 0b11000011}; /* 4 cells */
+            writeReg(CELL_SELECT_REG, write_buf);
+            break;
+        case 2:
+            printf("You selected Option 2.\n");
+            break;
+        case 3:
+            printf("Exiting...\n");
+            break;
+        default:
+            printf("Invalid option. Please try again.\n");
+    }
+}
+
+void processCommand(char* command) {
+    int option = atoi(command);
+    handleOption(option);
 }
 
 /**
  * @brief main function
  */
 void app_main() {
-    uint8_t reg_value;
-    uint8_t cellSelectReg = 0x49;
-    uint8_t write_buf[2] = {0x49, 0b11000011}; /* 4 cells */
+    char command[10];
+
     i2c_master_init();
     
+    while (1) {
+        showMainMenu();
+
+        printf("Enter option: ");
+        fflush(stdout);
+
+        // Read user input from the command line
+        fgets(command, sizeof(command), stdin);
+
+        // Remove newline character from the end of the string
+        strtok(command, "\n");
+
+        // Process the command
+        processCommand(command);
+
+        // Check if user wants to exit
+        if (atoi(command) == 3) {
+            break;
+        }
+    }
+
     ESP_ERROR_CHECK(i2c_driver_delete(I2C_MASTER_NUM));
     ESP_LOGI(TAG, "I2C de-initialized successfully");
 }
